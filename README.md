@@ -44,7 +44,7 @@ uv run m2m-mcp-server-ssh-client
 
 ### 1. Quick Start with Demo Server
 
-We maintain a public demo server with various MCP tools already configured and ready to use. (This server will be available for a limited period of time until we release a more secure and decentralized registry for machine-to-machine communication.)
+We maintain a public demo server with various MCP tools already configured and ready to use. (This server will be available until we release our open, decentralized registry.)
 
 This demo server has multiple MCP servers including HackerNews, MLB Stats API, and Formula 1 API tools for you to experiment with.
 

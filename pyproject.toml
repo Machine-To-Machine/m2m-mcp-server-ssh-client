@@ -1,6 +1,6 @@
 [project]
 name = "m2m-mcp-server-ssh-client"
-version = "0.1.0"
+version = "0.1.1"
 description = "A stdio-based MCP server installed locally to connect to a (remote) MCP server group through a secure SSH channel"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -37,7 +37,7 @@ Issues = "https://github.com/Machine-To-Machine/m2m-mcp-server-ssh-client/issues
 Documentation = "https://github.com/Machine-To-Machine/m2m-mcp-server-ssh-client/blob/main/README.md"
 Changelog = "https://github.com/Machine-To-Machine/m2m-mcp-server-ssh-client/blob/main/CHANGELOG.md"
 "Source Code" = "https://github.com/Machine-To-Machine/m2m-mcp-server-ssh-client"
-Security = "https://github.com/Machine-To-Machine/m2m-mcp-server-ssh-client/SECURITY.md"
+Security = "https://github.com/Machine-To-Machine/m2m-mcp-server-ssh-client/blob/main/SECURITY.md"
 
 [project.scripts]
 m2m-mcp-server-ssh-client = "m2m_mcp_server_ssh_client:main"

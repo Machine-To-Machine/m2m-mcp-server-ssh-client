@@ -6,6 +6,10 @@
 
 A Model Context Protocol Server (Remote SSH client) that connects to remote MCP servers over SSH. This client enables accessing and utilizing MCP tools hosted on remote servers, providing a secure channel for MCP communication.
 
+<a href="https://glama.ai/mcp/servers/@Machine-To-Machine/m2m-mcp-server-ssh-client">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@Machine-To-Machine/m2m-mcp-server-ssh-client/badge" />
+</a>
+
 ## Features
 
 - Connect to any MCP server over SSH

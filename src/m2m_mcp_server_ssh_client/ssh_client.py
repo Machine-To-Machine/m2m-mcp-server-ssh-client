@@ -20,7 +20,6 @@ import asyncssh
 import httpx
 import mcp.types as types
 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
-from anyio.streams.text import TextReceiveStream
 from mcp.shared.message import SessionMessage
 from pydantic import BaseModel
 
@@ -572,9 +571,7 @@ async def ssh_client(params: SSHServerParameters, errlog: TextIO = sys.stderr):
                     logger.debug("SSH writer started")
                     async with write_stream_reader:
                         async for session_message in write_stream_reader:
-                            logger.info(
-                                f"Received message to send: {session_message}"
-                            )
+                            logger.info(f"Received message to send: {session_message}")
                             json = session_message.message.model_dump_json(
                                 by_alias=True, exclude_none=True
                             )

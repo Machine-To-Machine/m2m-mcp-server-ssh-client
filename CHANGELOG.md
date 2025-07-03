@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2025-07-03
+
+### Fixed
+- **Critical**: Fixed SessionMessage handling in SSH client writer
+  - Updated type annotations to use `SessionMessage` instead of `JSONRPCMessage`
+  - Modified SSH writer to correctly extract JSON-RPC messages from SessionMessage wrapper
+  - Improved message parsing in SSH reader to wrap JSON-RPC messages in SessionMessage
+
+### Changed
+- Updated MCP dependency to `>=1.10.1` for better compatibility
+- Enhanced type safety in SSH client message handling
+
 ## [0.1.2] - 2025-04-10
 
 ### Improved

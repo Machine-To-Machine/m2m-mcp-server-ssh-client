@@ -20,6 +20,8 @@ import asyncssh
 import httpx
 import mcp.types as types
 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
+from anyio.streams.text import TextReceiveStream
+from mcp.shared.message import SessionMessage
 from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -384,11 +386,11 @@ async def ssh_client(params: SSHServerParameters, errlog: TextIO = sys.stderr):
         ConnectionError: If the connection cannot be established
     """
     logger.debug(f"SSH client parameters: {params}")
-    read_stream: MemoryObjectReceiveStream[types.JSONRPCMessage | Exception]
-    read_stream_writer: MemoryObjectSendStream[types.JSONRPCMessage | Exception]
+    read_stream: MemoryObjectReceiveStream[SessionMessage | Exception]
+    read_stream_writer: MemoryObjectSendStream[SessionMessage | Exception]
 
-    write_stream: MemoryObjectSendStream[types.JSONRPCMessage]
-    write_stream_reader: MemoryObjectReceiveStream[types.JSONRPCMessage]
+    write_stream: MemoryObjectSendStream[SessionMessage]
+    write_stream_reader: MemoryObjectReceiveStream[SessionMessage]
 
     logger.debug("Creating memory object streams")
     read_stream_writer, read_stream = anyio.create_memory_object_stream(0)
@@ -542,23 +544,12 @@ async def ssh_client(params: SSHServerParameters, errlog: TextIO = sys.stderr):
                                         line
                                     )
                                     logger.debug(f"Parsed message: {message}")
-                                    await read_stream_writer.send(message)
+                                    session_message = SessionMessage(message)
+                                    await read_stream_writer.send(session_message)
                                 except Exception as exc:
                                     logger.error(f"Error parsing JSON-RPC: {exc}")
                                     logger.debug(f"Invalid JSON: {line[:200]}")
                                     await read_stream_writer.send(exc)
-
-                        # Process any remaining data in buffer
-                        if buffer:
-                            logger.debug(f"Processing remaining buffer: {buffer[:100]}")
-                            try:
-                                message = types.JSONRPCMessage.model_validate_json(
-                                    buffer
-                                )
-                                logger.debug(f"Parsed final message: {message}")
-                                await read_stream_writer.send(message)
-                            except Exception as exc:
-                                logger.debug(f"Error parsing final buffer: {exc}")
 
                 except anyio.ClosedResourceError:
                     logger.debug("Resource closed in ssh_reader")
@@ -580,12 +571,15 @@ async def ssh_client(params: SSHServerParameters, errlog: TextIO = sys.stderr):
                 try:
                     logger.debug("SSH writer started")
                     async with write_stream_reader:
-                        async for message in write_stream_reader:
-                            json_data = message.model_dump_json(
+                        async for session_message in write_stream_reader:
+                            logger.info(
+                                f"Received message to send: {session_message}"
+                            )
+                            json = session_message.message.model_dump_json(
                                 by_alias=True, exclude_none=True
                             )
-                            logger.debug(f"Sending JSON: {json_data[:200]}")
-                            stdin.write(json_data + "\n")
+                            logger.debug(f"Sending JSON: {json[:200]}")
+                            stdin.write(json + "\n")
                             await stdin.drain()
                             logger.debug("Message sent and drained")
                 except anyio.ClosedResourceError:
